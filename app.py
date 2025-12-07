@@ -146,8 +146,10 @@ def get_gemini_response(user_message: str) -> str:
         return 'ごめんなさい、魔力の源が見つからないニャ…。設定を確認してほしいニャ。'
     try:
         # ★★★ モデル名を gemini-2.5-flash に変更 ★★★
-        model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=SYSTEM_PROMPT)
-        response = model.generate_content(user_message, generation_config=genai.types.GenerationConfig(temperature=0.9, top_p=0.95, max_output_tokens=500))
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        # system_instructionをユーザーメッセージに統合
+        full_prompt = f"{SYSTEM_PROMPT}\n\nユーザーからの相談: {user_message}"
+        response = model.generate_content(full_prompt, generation_config=genai.types.GenerationConfig(temperature=0.9, top_p=0.95, max_output_tokens=500))
         return response.text.strip()
     except Exception as e:
         logger.error(f'Gemini API エラー: {str(e)}')
