@@ -150,7 +150,22 @@ def get_gemini_response(user_message: str) -> str:
         # system_instructionをユーザーメッセージに統合
         full_prompt = f"{SYSTEM_PROMPT}\n\nユーザーからの相談: {user_message}"
         response = model.generate_content(full_prompt, generation_config=genai.types.GenerationConfig(temperature=0.9, top_p=0.95, max_output_tokens=500))
-        return response.text.strip()
+        
+        # レスポンスの検証
+        if not response or not response.candidates:
+            logger.error('Gemini API: 応答が空です')
+            return 'すみません、今は魔力が弱まっているようです。少し時間をおいてからもう一度お試しください。ニャ〜'
+        
+        # テキストを安全に取得
+        if hasattr(response, 'text') and response.text:
+            return response.text.strip()
+        elif response.candidates and len(response.candidates) > 0:
+            candidate = response.candidates[0]
+            if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts') and candidate.content.parts:
+                return candidate.content.parts[0].text.strip()
+        
+        logger.error('Gemini API: テキストを抽出できませんでした')
+        return 'すみません、今は魔力が弱まっているようです。少し時間をおいてからもう一度お試しください。ニャ〜'
     except Exception as e:
         logger.error(f'Gemini API エラー: {str(e)}')
         return 'すみません、今は魔力が弱まっているようです。少し時間をおいてからもう一度お試しください。ニャ〜'
