@@ -145,8 +145,8 @@ def get_gemini_response(user_message: str) -> str:
         logger.error('Gemini APIキーが設定されていません。')
         return 'ごめんなさい、魔力の源が見つからないニャ…。設定を確認してほしいニャ。'
     try:
-        # ★★★ モデル名を gemini-1.5-flash に変更 ★★★
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # 定番の安定モデルに変更
+        model = genai.GenerativeModel('gemini-pro')
         # system_instructionをユーザーメッセージに統合
         full_prompt = f"{SYSTEM_PROMPT}\n\nユーザーからの相談: {user_message}"
         response = model.generate_content(full_prompt, generation_config=genai.GenerationConfig(temperature=0.9, top_p=0.95, max_output_tokens=500))
