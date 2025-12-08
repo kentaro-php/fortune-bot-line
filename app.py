@@ -149,7 +149,7 @@ def get_gemini_response(user_message: str) -> str:
         model = genai.GenerativeModel('gemini-1.5-flash')
         # system_instructionをユーザーメッセージに統合
         full_prompt = f"{SYSTEM_PROMPT}\n\nユーザーからの相談: {user_message}"
-        response = model.generate_content(full_prompt, generation_config=genai.types.GenerationConfig(temperature=0.9, top_p=0.95, max_output_tokens=500))
+        response = model.generate_content(full_prompt, generation_config=genai.GenerationConfig(temperature=0.9, top_p=0.95, max_output_tokens=500))
         
         # レスポンスの検証
         if not response or not response.candidates:
